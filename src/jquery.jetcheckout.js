@@ -8,7 +8,7 @@
 ;(function ($, window, document, undefined) {
 
     "use strict";
-    const pluginName  = "JetCheckout",
+    const pluginName  = "jetCheckout",
           cleanString = (value) => value.replace(/[^\d]+/g, ""),
           defaults    = {
               debug:              false,
@@ -56,12 +56,12 @@
                   },
                   date:       {
                       type:    "regex",
-                      pattern: `/((([0][1-9]|[12][\d])|[3][01])[-/]([0][13578]|[1][02])[-/][1-9]\d\d\d)|((([0][1-9]|[12][\d])|[3][0])[-/]([0][13456789]|[1][012])[-/][1-9]\d\d\d)|(([0][1-9]|[12][\d])[-/][0][2][-/][1-9]\d([02468][048]|[13579][26]))|(([0][1-9]|[12][0-8])[-/][0][2][-/][1-9]\d\d\d)/u`,
+                      pattern: /((([0][1-9]|[12][\d])|[3][01])[-/]([0][13578]|[1][02])[-/][1-9]\d\d\d)|((([0][1-9]|[12][\d])|[3][0])[-/]([0][13456789]|[1][012])[-/][1-9]\d\d\d)|(([0][1-9]|[12][\d])[-/][0][2][-/][1-9]\d([02468][048]|[13579][26]))|(([0][1-9]|[12][0-8])[-/][0][2][-/][1-9]\d\d\d)/u,
                       message: "Data de Nascimento inválida."
                   },
                   creditcard: {
                       type:    "regex",
-                      pattern: `/\d{4}-?\d{4}-?\d{4}-?\d{4}/u`,
+                      pattern: /\d{4}-?\d{4}-?\d{4}-?\d{4}/u,
                       message: "Cartão de crédito inválido."
                   },
                   cpfCnpj:    {
@@ -70,7 +70,7 @@
                   },
                   email:      {
                       type:    "regex",
-                      pattern: `/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/u`,
+                      pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/u,
                       message: "E-mail inválido. Ex: seuemail@provedor.com"
                   },
                   empty:      {
@@ -79,17 +79,17 @@
                   },
                   name:       {
                       type:    "name",
-                      pattern: `/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u`,
+                      pattern: /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u,
                       message: "Preencha com seu come completo. (Ex: João Silva ou Maria Silva)"
                   },
                   number:     {
                       type:    "regex",
-                      pattern: `/^\d+$/u`,
+                      pattern: /^\d+$/u,
                       message: "Somente números."
                   },
                   phone:      {
                       type:    "regex",
-                      pattern: `/(^|\()?\s*(\d{2})\s*(\s|\))*(9?\d{4})(\s|-)?(\d{4})($|\n)/u`,
+                      pattern: /(^|\()?\s*(\d{2})\s*(\s|\))*(9?\d{4})(\s|-)?(\d{4})($|\n)/u,
                       message: "Telefone inválido. (Ex: (16) 3645-9857 ou (16) 98764-5316)"
                   },
                   select:     {
@@ -102,6 +102,18 @@
                       onValidateInputComplete: function () {
                       }
                   }
+              },
+              onValidateFail:     function () {
+              },
+              onValidateSucess:   function () {
+              },
+              onInputComplete:    function () {
+              },
+              onNext:             function () {
+              },
+              onshowNextField:    function () {
+              },
+              disableEvent:       function () {
               }
           };
 
