@@ -11,109 +11,109 @@
     const pluginName  = "jetCheckout",
           cleanString = (value) => value.replace(/[^\d]+/g, ""),
           defaults    = {
-              debug:              false,
-              exec:               "",
-              params:             "",
-              fieldSelector:      ".field",
+              debug: false,
+              exec: "",
+              params: "",
+              fieldSelector: ".field",
               fieldGroupSelector: ".fields",
-              activeClass:        "ativo",
-              profile:            {
-                  active:   "",
+              activeClass: "ativo",
+              profile: {
+                  active: "",
                   selector: {
                       pf: ".pessoa.fisica",
                       pj: ".pessoa.juridica"
                   }
               },
-              disabled:           {
+              disabled: {
                   class: "disabled"
               },
-              success:            {
-                  class:   "success",
+              success: {
+                  class: "success",
                   message: {
                       class: ""
                   }
               },
-              warning:            {
-                  class:   "warning",
+              warning: {
+                  class: "warning",
                   message: {
                       class: ""
                   }
               },
-              error:              {
-                  class:   "error",
+              error: {
+                  class: "error",
                   message: {
                       class: "ui basic red pointing prompt label",
                   }
               },
-              validate:           {
-                  default:    {
-                      type:       "",
-                      pattern:    "",
-                      message:    "",
+              validate: {
+                  default: {
+                      type: "",
+                      pattern: "",
+                      message: "",
                       toValidate: function () {
                           return true;
                       }
                   },
-                  date:       {
-                      type:    "regex",
+                  date: {
+                      type: "regex",
                       pattern: /((([0][1-9]|[12][\d])|[3][01])[-/]([0][13578]|[1][02])[-/][1-9]\d\d\d)|((([0][1-9]|[12][\d])|[3][0])[-/]([0][13456789]|[1][012])[-/][1-9]\d\d\d)|(([0][1-9]|[12][\d])[-/][0][2][-/][1-9]\d([02468][048]|[13579][26]))|(([0][1-9]|[12][0-8])[-/][0][2][-/][1-9]\d\d\d)/u,
                       message: "Data de Nascimento inválida."
                   },
                   creditcard: {
-                      type:    "regex",
+                      type: "regex",
                       pattern: /\d{4}-?\d{4}-?\d{4}-?\d{4}/u,
                       message: "Cartão de crédito inválido."
                   },
-                  cpfCnpj:    {
-                      type:    "cpfcnpj",
+                  cpfCnpj: {
+                      type: "cpfcnpj",
                       message: "CPF/CNPJ inválido."
                   },
-                  email:      {
-                      type:    "regex",
+                  email: {
+                      type: "regex",
                       pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/u,
                       message: "E-mail inválido. Ex: seuemail@provedor.com"
                   },
-                  empty:      {
-                      type:    "empty",
+                  empty: {
+                      type: "empty",
                       message: "Campo obrigatório."
                   },
-                  name:       {
-                      type:    "name",
+                  name: {
+                      type: "name",
                       pattern: /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u,
                       message: "Preencha com seu come completo. (Ex: João Silva ou Maria Silva)"
                   },
-                  number:     {
-                      type:    "regex",
+                  number: {
+                      type: "regex",
                       pattern: /^\d+$/u,
                       message: "Somente números."
                   },
-                  phone:      {
-                      type:    "regex",
+                  phone: {
+                      type: "regex",
                       pattern: /(^|\()?\s*(\d{2})\s*(\s|\))*(9?\d{4})(\s|-)?(\d{4})($|\n)/u,
                       message: "Telefone inválido. (Ex: (16) 3645-9857 ou (16) 98764-5316)"
                   },
-                  select:     {
-                      type:    "select",
+                  select: {
+                      type: "select",
                       message: "Escolha uma opção."
                   },
-                  zipcode:    {
-                      type:                    "zipcode",
-                      message:                 "CEP inválido.",
+                  zipcode: {
+                      type: "zipcode",
+                      message: "CEP inválido.",
                       onValidateInputComplete: function () {
                       }
                   }
               },
-              onValidateFail:     function () {
+              onValidateFail: function () {
               },
-              onValidateSucess:   function () {
+              onValidateSucess: function () {
               },
-              onInputComplete:    function () {
+              onInputComplete: function () {
               },
-              onNext:             function () {
+              onNext: function () {
               },
-              onshowNextField:    function () {
+              onshowNextField: function () {
               },
-              disableEvent:       function () {
+              disableEvent: function () {
               }
           };
 
@@ -126,7 +126,7 @@
     }
 
     $.extend(JetCheckout.prototype, {
-        init:                     function () {
+        init: function () {
             let $element = $(this.element),
                 jet      = this;
 
@@ -189,7 +189,7 @@
          * @param (Field)
          * @returns {boolean}
          */
-        validateField:            function ($field) {
+        validateField: function ($field) {
             $field      = $($field);
             let jet     = this,
                 regex   = false,
@@ -213,7 +213,6 @@
                             if (cleanString(value).length === 11) {
                                 jet.changeProfile("pf");
                                 regex = $.fn[pluginName].validateCPF(value);
-                                0
                             }
                             else if (cleanString(value).length === 14) {
                                 jet.changeProfile("pj");
@@ -285,7 +284,7 @@
          * @param $field
          * @param id
          */
-        fieldIsValid:             function ($field, id) {
+        fieldIsValid: function ($field, id) {
             $field  = $($field);
             let jet = this;
 
@@ -299,7 +298,7 @@
          * @param id
          * @param message
          */
-        fieldIsInvalid:           function ($field, id, message) {
+        fieldIsInvalid: function ($field, id, message) {
             $field  = $($field);
             let jet = this;
             $field.attr("data-jet-valid", false).removeClass(jet.settings.success.class).addClass(jet.settings.error.class);
@@ -313,14 +312,14 @@
          *
          * @param profile
          */
-        changeProfile:            function (profile) {
+        changeProfile: function (profile) {
             let jet = this;
             for (let key in jet.settings.profile.selector) {
                 if (key === profile) {
                     jet.settings.profile.active = jet.settings.profile.selector[key];
-                    $(`${jet.settings.profile.selector[key]} > input`).val("").attr("disabled", false);
+                    $(`${jet.settings.profile.active}`).find("input:first").val("").attr("disabled", false);
                 }
-                $(`${jet.settings.profile.selector[key]}:not(${jet.settings.profile.active}) > input`).hide().val("").attr("disabled", true);
+                $(`${jet.settings.profile.selector[key]}:not(${jet.settings.profile.active})`).hide().find("input:first").val("").attr("disabled", true);
             }
         },
         /**
@@ -340,7 +339,7 @@
          * Show the field and add focus to it if is needed.
          * @param (field)
          */
-        showElement:              function ($fieldObject, revel = false) {
+        showElement: function ($fieldObject, revel = false) {
             $fieldObject = $($fieldObject);
             let jet      = this;
             $fieldObject
@@ -351,7 +350,6 @@
                     $(this).attr("disabled", false);
                 });
             jet.settings.onshowNextField();
-            console.log(!!$fieldObject.attr("data-jet-revel"));
             if ($fieldObject.find('select').length >= 1 || revel || !$fieldObject.attr("data-jet-revel")) {
                 return;
             }
@@ -367,7 +365,7 @@
          * @param isGroup {boolean}
          * @returns {boolean}
          */
-        showNextField:            function ($currentElement, isGroup = false) {
+        showNextField: function ($currentElement, isGroup = false) {
             $currentElement  = $($currentElement);
             let jet          = this,
                 $nextElement = $currentElement.next();
@@ -393,7 +391,7 @@
          * @param $currentElement
          * @returns {boolean}
          */
-        validateShowField:        function ($currentElement) {
+        validateShowField: function ($currentElement) {
             $currentElement = $($currentElement);
             let jet         = this;
 
@@ -444,28 +442,28 @@
         /**
          * Return all the current active fields.
          */
-        getActiveFields:          function () {
+        getActiveFields: function () {
             let jet = this;
             return jet.settings.element.find("[data-jet-active='true']");
         },
         /**
          * Return all the current valid fields.
          */
-        getValidFields:           function () {
+        getValidFields: function () {
             let jet = this;
             return jet.settings.element.find(`.${jet.settings.success.class}`);
         },
         /**
          * Return all the current inactive fields.
          */
-        getInactiveFields:        function () {
+        getInactiveFields: function () {
             let jet = this;
             return jet.settings.element.find("[data-jet-active='false']");
         },
         /**
          * Return al the current invalid fields.
          */
-        getInvalidFields:         function () {
+        getInvalidFields: function () {
             let jet = this;
             return jet.settings.element.find(`.${jet.settings.error.class}`);
         }
@@ -514,59 +512,63 @@
      * @returns {boolean}
      */
     $.fn[pluginName].validateCNPJ = function (cnpj) {
-        cnpj = cleanString(cnpj);
-        if (cnpj === "") {
-            return false;
-        }
-        if (cnpj.length !== 14) {
-            return false;
-        }
-        if (cnpj === "00000000000000" ||
-            cnpj === "11111111111111" ||
-            cnpj === "22222222222222" ||
-            cnpj === "33333333333333" ||
-            cnpj === "44444444444444" ||
-            cnpj === "55555555555555" ||
-            cnpj === "66666666666666" ||
-            cnpj === "77777777777777" ||
-            cnpj === "88888888888888" ||
-            cnpj === "99999999999999") {
-            return false;
-        }
+        let BLACKLIST = [
+            "00000000000000",
+            "11111111111111",
+            "22222222222222",
+            "33333333333333",
+            "44444444444444",
+            "55555555555555",
+            "66666666666666",
+            "77777777777777",
+            "88888888888888",
+            "99999999999999"
+        ],
+            STRICT_STRIP_REGEX = /[-\/.]/g,
+            LOOSE_STRIP_REGEX = /[^\d]/g,
+            CNPJ = {};
 
-        let tamanho = cnpj.length - 2,
-            numeros = cnpj.substring(0, tamanho),
-            digitos = cnpj.substring(tamanho),
-            soma    = 0,
-            pos     = tamanho - 7;
+        let verifierDigit = function (numbers) {
+            let index   = 2;
+            let reverse = numbers.split("").reduce(function (buffer, number) {
+                return [parseInt(number, 10)].concat(buffer);
+            }, []);
 
-        for (let i = tamanho; i >= 1; i--) {
-            soma += numeros.charAt(tamanho - i) * pos--;
-            if (pos < 2) {
-                pos = 9;
+            let sum = reverse.reduce(function (buffer, number) {
+                buffer += number * index;
+                index = (index === 9 ? 2 : index + 1);
+                return buffer;
+            }, 0);
+
+            let mod = sum % 11;
+            return (mod < 2 ? 0 : 11 - mod);
+        };
+        CNPJ.format = function (number) {
+            return this.strip(number).replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
+        };
+        CNPJ.strip = function (number, strict) {
+            let regex = strict ? STRICT_STRIP_REGEX : LOOSE_STRIP_REGEX;
+            return (number || "").toString().replace(regex, "");
+        };
+        CNPJ.isValid = function (number, strict) {
+            let stripped = this.strip(number, strict);
+            if (!stripped) {
+                return false;
             }
-        }
-
-        let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-        if (resultado !== digitos.charAt(0)) {
-            return false;
-        }
-
-        tamanho = tamanho + 1;
-        numeros = cnpj.substring(0, tamanho);
-        soma    = 0;
-        pos     = tamanho - 7;
-        for (let i = tamanho; i >= 1; i--) {
-            soma += numeros.charAt(tamanho - i) * pos--;
-            if (pos < 2) {
-                pos = 9;
+            if (stripped.length !== 14) {
+                return false;
             }
-        }
-        resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-        if (resultado !== digitos.charAt(1)) {
-            return false;
-        }
-        return true;
+            if (BLACKLIST.indexOf(stripped) >= 0) {
+                return false;
+            }
+
+            let numbers = stripped.substr(0, 12);
+            numbers += verifierDigit(numbers);
+            numbers += verifierDigit(numbers);
+
+            return numbers.substr(-2) === stripped.substr(-2);
+        };
+        return CNPJ.isValid(cnpj);
     };
     /**
      * validate brazilian cpf
@@ -574,46 +576,68 @@
      * @returns {boolean}
      */
     $.fn[pluginName].validateCPF = function (cpf) {
-        cpf = cleanString(cpf);
-        if (cpf === "") {
-            return false;
-        }
-        if (cpf.length !== 11 ||
-            cpf === "00000000000" ||
-            cpf === "11111111111" ||
-            cpf === "22222222222" ||
-            cpf === "33333333333" ||
-            cpf === "44444444444" ||
-            cpf === "55555555555" ||
-            cpf === "66666666666" ||
-            cpf === "77777777777" ||
-            cpf === "88888888888" ||
-            cpf === "99999999999") {
-            return false;
-        }
-        let add = 0;
-        for (let i = 0; i < 9; i++) {
-            add += parseInt(cpf.charAt(i)) * (10 - i);
-        }
-        let rev = 11 - (add % 11);
-        if (rev === 10 || rev === 11) {
-            rev = 0;
-        }
-        if (rev !== parseInt(cpf.charAt(9))) {
-            return false;
-        }
-        add = 0;
-        for (let i = 0; i < 10; i++) {
-            add += parseInt(cpf.charAt(i)) * (11 - i);
-        }
-        rev = 11 - (add % 11);
-        if (rev === 10 || rev === 11) {
-            rev = 0;
-        }
-        if (rev !== parseInt(cpf.charAt(10))) {
-            return false;
-        }
-        return true;
+        // Blacklist common values.
+        let BLACKLIST          = [
+                "00000000000",
+                "11111111111",
+                "22222222222",
+                "33333333333",
+                "44444444444",
+                "55555555555",
+                "66666666666",
+                "77777777777",
+                "88888888888",
+                "99999999999",
+                "12345678909"
+            ],
+            STRICT_STRIP_REGEX = /[.-]/g,
+            LOOSE_STRIP_REGEX  = /[^\d]/g,
+            CPF                = {};
+
+        let verifierDigit = function (numbers) {
+            numbers = numbers
+                .split("")
+                .map(function (number) {
+                    return parseInt(number, 10);
+                })
+            ;
+
+            let modulus = numbers.length + 1;
+
+            let multiplied = numbers.map(function (number, index) {
+                return number * (modulus - index);
+            });
+
+            let mod = multiplied.reduce(function (buffer, number) {
+                    return buffer + number;
+                }) % 11;
+
+            return (mod < 2 ? 0 : 11 - mod);
+        };
+        CPF.strip         = function (number, strict) {
+            let regex = strict ? STRICT_STRIP_REGEX : LOOSE_STRIP_REGEX;
+            return (number || "").toString().replace(regex, "");
+        };
+        CPF.isValid       = function (number, strict) {
+            let stripped = this.strip(number, strict);
+            if (!stripped) {
+                return false;
+            }
+            if (stripped.length !== 11) {
+                return false;
+            }
+            if (BLACKLIST.indexOf(stripped) >= 0) {
+                return false;
+            }
+
+            let numbers = stripped.substr(0, 9);
+            numbers += verifierDigit(numbers);
+            numbers += verifierDigit(numbers);
+
+            return numbers.substr(-2) === stripped.substr(-2);
+        };
+
+        return CPF.isValid(cpf);
     };
     /**
      * Show the error message based on the config.
