@@ -2,8 +2,8 @@
  * JetCheckout Plugin
  * Author: Heitor Ramon Ribeiro
  * Email: heitor.ramon@gmail.com
- * WebSite: www.jet.com.br
- * Personal WEb: www.heitorramon.com
+ * Website: www.heitorramon.com
+ * Repo: https://github.com/bloodf/jetcheckout
  */
 ;(function ($, window, document, undefined) {
 
@@ -12,9 +12,8 @@
           cleanString = (value) => value.replace(/[^\d]+/g, ""),
           defaults    = {
               debug: false,
-              exec: "",
-              params: "",
               fieldSelector: ".field",
+              requiredSelector: ".required",
               fieldGroupSelector: ".fields",
               activeClass: "ativo",
               profile: {
@@ -103,6 +102,8 @@
                       }
                   }
               },
+              onValidateClear: function () {
+              },
               onValidateFail: function () {
               },
               onValidateSucess: function () {
@@ -114,6 +115,10 @@
               onshowNextField: function () {
               },
               disableEvent: function () {
+              },
+              onFinishedForm: function (form, fields) {
+              },
+              onUnFinishedForm: function (form, field) {
               }
           };
 
@@ -127,10 +132,12 @@
 
     $.extend(JetCheckout.prototype, {
         init: function () {
-            let $element = $(this.element),
-                jet      = this;
+            let $element      = $(this.element),
+                jet           = this,
+                groupSelector = this.settings.fieldGroupSelector,
+                fieldSelector = this.settings.fieldSelector;
 
-            $element.find(`${this.settings.fieldGroupSelector}:not([data-jet-active="true"]), ${this.settings.fieldSelector}:not([data-jet-active="true"]), [data-jet-active="false"]`)
+            $element.find(`${groupSelector}:not([data-jet-active="true"]), ${fieldSelector}:not([data-jet-active="true"]), [data-jet-active="false"]`)
                 .hide()
                 .find("input")
                 .each(function () {
@@ -139,12 +146,12 @@
 
             $element.show();
 
-            $element.find(this.settings.fieldGroupSelector).each(function () {
+            $element.find(groupSelector).each(function () {
                 $(this).attr('data-jet-field-group', true);
                 $.fn[pluginName].setId($(this));
             });
 
-            $element.find(this.settings.fieldSelector).each(function () {
+            $element.find(fieldSelector).each(function () {
                 $.fn[pluginName].setId($(this));
 
                 $(this).attr("data-jet-field", true);
@@ -158,18 +165,23 @@
                         };
                     })();
 
-                $input.keypress(() => {
+                $input.keypress((e) => {
+                    let keyCode = e.keyCode || e.which;
+                    if (keyCode === 9) {
+                        if (!jet.validateField($this)) {
+                            e.preventDefault();
+                            $input.focus();
+                        }
+                    }
                     keypressDelay(function () {
                         if (jet.validateField($this)) {
                             jet.settings.onNext.call($this);
                             jet.showNextField($this);
                         }
-                        else {
 
-                        }
                     }, 500);
                 });
-                $input.blur((event) => {
+                $input.on("blur change", () => {
                     jet.settings.onInputComplete.call($this);
                     if (jet.validateField($this)) {
                         jet.settings.onNext.call($this);
@@ -179,8 +191,8 @@
                         }
                     }
                 });
-
             });
+
             return this;
         },
         /**
@@ -190,16 +202,17 @@
          * @returns {boolean}
          */
         validateField: function ($field) {
-            $field      = $($field);
-            let jet     = this,
-                regex   = false,
-                isValid = false,
-                id      = $field.attr("data-jet-checkout-id"),
-                $input  = $field.find("input:first"),
-                type    = $input.attr("data-jet-validate"),
-                value   = $input.val(),
-                message = "";
-
+            $field             = $($field);
+            let jet            = this,
+                regex          = false,
+                isValid        = false,
+                id             = $field.attr("data-jet-checkout-id"),
+                $input         = $field.find("input:first"),
+                type           = $input.attr("data-jet-validate"),
+                fieldBehaviour = $input.attr("data-jet-type"),
+                value          = $input.val(),
+                message        = "";
+            jet.endOfForm();
             if (type === undefined) {
                 return true;
             }
@@ -210,6 +223,11 @@
                         let validateOptions = jet.settings.validate[key];
                         message             = validateOptions.message;
                         if (validateOptions.type === "cpfcnpj") {
+                            if (fieldBehaviour === "profileChanger" && cleanString(value).length === 0) {
+                                jet.changeProfile("clear");
+                                jet.fieldClear($field, id);
+                                return false;
+                            }
                             if (cleanString(value).length === 11) {
                                 jet.changeProfile("pf");
                                 regex = $.fn[pluginName].validateCPF(value);
@@ -251,7 +269,7 @@
                         else if (validateOptions.type === "zipcode") {
                             let validacep = /^[0-9]{8}$/;
                             value         = cleanString(value);
-                            if (value.length >= 1 && !validacep.test(value)) {
+                            if (value === "" || value.length >= 1 && !validacep.test(value)) {
                                 regex = false;
                             }
                             else if (validacep.test(value)) {
@@ -278,6 +296,18 @@
                 jet.fieldIsInvalid($field, id, message);
                 return false;
             }
+        },
+        /**
+         * change the field to a valid state
+         * @param $field
+         * @param id
+         */
+        fieldClear: function ($field, id) {
+            $field  = $($field);
+            let jet = this;
+            $field.attr("data-jet-valid", true).removeClass(jet.settings.error.class).removeClass(jet.settings.success.class);
+            $.fn[pluginName].showErrorMsg({remove: true, id: id});
+            jet.settings.onValidateClear.call($field);
         },
         /**
          * change the field to a valid state
@@ -314,7 +344,17 @@
          */
         changeProfile: function (profile) {
             let jet = this;
+            if (profile === "clear") {
+                for (let key in jet.settings.profile.selector) {
+                    $(`${jet.settings.profile.selector[key]}`).hide().find("input:first").val("").attr("disabled", true);
+                }
+                return false;
+            }
+
             for (let key in jet.settings.profile.selector) {
+                if (profile === "clear") {
+                    $(`${jet.settings.profile.selector[key]}`).hide().find("input:first").val("").attr("disabled", true);
+                }
                 if (key === profile) {
                     jet.settings.profile.active = jet.settings.profile.selector[key];
                     $(`${jet.settings.profile.active}`).find("input:first").val("").attr("disabled", false);
@@ -344,20 +384,53 @@
             let jet      = this;
             $fieldObject
                 .attr("data-jet-active", true)
-                .show()
+                .fadeIn()
                 .find("input")
                 .each(function () {
                     $(this).attr("disabled", false);
                 });
-            jet.settings.onshowNextField();
             if ($fieldObject.find('select').length >= 1 || revel || !$fieldObject.attr("data-jet-revel")) {
                 return;
             }
-
             $fieldObject
                 .find('input:first')
                 .focus();
+            jet.settings.onshowNextField().call(this);
+        },
+        formStatus: function () {
+            let jet          = this,
+                required     = `${jet.settings.fieldSelector}${jet.settings.requiredSelector}`,
+                error = `${jet.settings.error.class}`,
+                success = `${jet.settings.success.class}`,
+                $error = $(`${required}.${error}:visible:not(.${success})`),
+                $sucess = $(`${required}.${success}:visible:not(.${error})`),
+                $incomplete = $(`${required}:visible:not(.${success}):not(.${error})`),
+                $notError = $(`${required}:not(.${error}):visible`),
+                $notSucess = $(`${required}:visible:not(.${success})`);
 
+            return {
+                complete:(!!jet.isTheEnd && !$incomplete.length && !$notSucess.hasClass(error) && $notError.hasClass(success)),
+                error: ($error.hasClass(error)),
+                success:($notError.hasClass(success) && !$incomplete.length && !$notSucess.hasClass(error)),
+                fields:{
+                    error:$error,
+                    success:$sucess,
+                    incomplete:$incomplete
+                }
+            };
+
+        },
+        endOfForm: function () {
+            let jet = this,
+                status = jet.formStatus();
+            if (jet.executed) {
+                if (status.error) {
+                    jet.settings.onUnFinishedForm(jet.element, status.fields);
+                }
+                if(status.success && status.complete) {
+                    jet.settings.onFinishedForm(jet.element, status.fields);
+                }
+            }
         },
         /**
          * Show the next element of the field.
@@ -378,6 +451,14 @@
                 return false;
             }
             else if (!$nextElement.length) {
+                if (!$currentElement.parent().next().length) {
+                    if (this.isTheEnd === undefined) {
+                        this.isTheEnd = true;
+                        jet.executed  = true;
+                    }
+                    this.endOfForm();
+                    return true;
+                }
                 jet.validateShowField($currentElement.parent().next());
                 return false;
             }
@@ -439,40 +520,12 @@
             }
 
         },
-        /**
-         * Return all the current active fields.
-         */
-        getActiveFields: function () {
-            let jet = this;
-            return jet.settings.element.find("[data-jet-active='true']");
-        },
-        /**
-         * Return all the current valid fields.
-         */
-        getValidFields: function () {
-            let jet = this;
-            return jet.settings.element.find(`.${jet.settings.success.class}`);
-        },
-        /**
-         * Return all the current inactive fields.
-         */
-        getInactiveFields: function () {
-            let jet = this;
-            return jet.settings.element.find("[data-jet-active='false']");
-        },
-        /**
-         * Return al the current invalid fields.
-         */
-        getInvalidFields: function () {
-            let jet = this;
-            return jet.settings.element.find(`.${jet.settings.error.class}`);
-        }
     });
 
     $.fn[pluginName] = function (options) {
         return this.each(function () {
-            if (!$.data(this, "plugin_" + pluginName)) {
-                $.data(this, "plugin_" +
+            if (!$.data(this, "data-" + pluginName)) {
+                $.data(this, "data-" +
                     pluginName, new JetCheckout(this, options));
             }
         });
@@ -512,21 +565,21 @@
      * @returns {boolean}
      */
     $.fn[pluginName].validateCNPJ = function (cnpj) {
-        let BLACKLIST = [
-            "00000000000000",
-            "11111111111111",
-            "22222222222222",
-            "33333333333333",
-            "44444444444444",
-            "55555555555555",
-            "66666666666666",
-            "77777777777777",
-            "88888888888888",
-            "99999999999999"
-        ],
+        let BLACKLIST          = [
+                "00000000000000",
+                "11111111111111",
+                "22222222222222",
+                "33333333333333",
+                "44444444444444",
+                "55555555555555",
+                "66666666666666",
+                "77777777777777",
+                "88888888888888",
+                "99999999999999"
+            ],
             STRICT_STRIP_REGEX = /[-\/.]/g,
-            LOOSE_STRIP_REGEX = /[^\d]/g,
-            CNPJ = {};
+            LOOSE_STRIP_REGEX  = /[^\d]/g,
+            CNPJ               = {};
 
         let verifierDigit = function (numbers) {
             let index   = 2;
@@ -543,14 +596,14 @@
             let mod = sum % 11;
             return (mod < 2 ? 0 : 11 - mod);
         };
-        CNPJ.format = function (number) {
+        CNPJ.format       = function (number) {
             return this.strip(number).replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
         };
-        CNPJ.strip = function (number, strict) {
+        CNPJ.strip        = function (number, strict) {
             let regex = strict ? STRICT_STRIP_REGEX : LOOSE_STRIP_REGEX;
             return (number || "").toString().replace(regex, "");
         };
-        CNPJ.isValid = function (number, strict) {
+        CNPJ.isValid      = function (number, strict) {
             let stripped = this.strip(number, strict);
             if (!stripped) {
                 return false;
