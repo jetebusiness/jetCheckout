@@ -1,51 +1,35 @@
 {
+  "name": "jetcheckout",
+  "version": "1.0.1",
+  "description": "jetCheckout - The simple checkout for you e-commerce",
+  "keywords": [
+    "jquery-plugin"
+  ],
   "author": {
     "name": "Heitor Ramon Ribeiro",
     "email": "heitor.ramon@gmail.com",
-    "url": "https://github.com/bloodf"
+    "url": "https://github.com/bloo_df"
   },
-  "bugs": {
-    "url": "https://github.com/bloodf/jetCheckout/issues"
-  },
-  "bundleDependencies": false,
-  "contributors": [],
-  "dependencies": {
-    "jquery": ">=3.0.0"
-  },
-  "deprecated": false,
-  "description": "Jet Checkout jQuery plugin",
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-coffee": "^0.13.0",
-    "grunt-contrib-concat": "^0.5.1",
-    "grunt-contrib-jshint": "^0.11.0",
-    "grunt-contrib-uglify": "^0.9.2",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-jscs": "^2.7.0",
-    "grunt-karma": "^0.12.0",
-    "jscs": "^2.10.1",
-    "karma": "^0.13.21",
-    "karma-firefox-launcher": "^0.1.6",
-    "karma-phantomjs-launcher": "^0.2.1",
-    "karma-qunit": "^0.1.5",
-    "phantomjs": "^1.9.18",
-    "qunitjs": "^1.19.0"
-  },
-  "homepage": "http://jet.com.br",
-  "keywords": [
-    "jquery-plugin",
-    "jquery",
-    "jetcheckout"
-  ],
+  "repository": "https://github.com/bloodf/jetChekout",
+  "main": "src/jquery.jetcheckout.js",
   "license": "Apache 2.0",
-  "name": "jquery-jetcheckout",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bloodf/jetCheckout.git"
-  },
   "scripts": {
-    "jscs": "jscs src",
-    "test": "npm run jscs && grunt travis --verbose"
+    "dev": "gulp dev",
+    "dist": "gulp dist",
+    "test": "gulp test"
   },
-  "version": "0.1"
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-core": "^6.25.0",
+    "babel-preset-env": "^1.6.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "gulp-qunit": "^1.5.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-uglify": "^3.0.0",
+    "jquery": "^3.2.1",
+    "pump": "^1.0.2",
+    "qunit": "^1.0.0"
+  }
 }

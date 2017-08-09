@@ -137,6 +137,8 @@
                 groupSelector = this.settings.fieldGroupSelector,
                 fieldSelector = this.settings.fieldSelector;
 
+            this.tabIndex = 0;
+
             $element.find(`${groupSelector}:not([data-jet-active="true"]), ${fieldSelector}:not([data-jet-active="true"]), [data-jet-active="false"]`)
                 .hide()
                 .find("input")
@@ -382,52 +384,53 @@
         showElement: function ($fieldObject, revel = false) {
             $fieldObject = $($fieldObject);
             let jet      = this;
+
             $fieldObject
                 .attr("data-jet-active", true)
                 .fadeIn()
+                .focus()
                 .find("input")
                 .each(function () {
                     $(this).attr("disabled", false);
                 });
-            if ($fieldObject.find('select').length >= 1 || revel || !$fieldObject.attr("data-jet-revel")) {
-                return;
+            if ($fieldObject.is(jet.settings.fieldSelector) && $fieldObject.is("visible")) {
+                let index = jet.tabIndex = jet.tabIndex + 1;
+                $fieldObject.attr("tabindex", index);
             }
-            $fieldObject
-                .find('input:first')
-                .focus();
-            jet.settings.onshowNextField().call(this);
+            jet.settings.onshowNextField($fieldObject);
+
         },
         formStatus: function () {
-            let jet          = this,
-                required     = `${jet.settings.fieldSelector}${jet.settings.requiredSelector}`,
-                error = `${jet.settings.error.class}`,
-                success = `${jet.settings.success.class}`,
-                $error = $(`${required}.${error}:visible:not(.${success})`),
-                $sucess = $(`${required}.${success}:visible:not(.${error})`),
+            let jet         = this,
+                required    = `${jet.settings.fieldSelector}${jet.settings.requiredSelector}`,
+                error       = `${jet.settings.error.class}`,
+                success     = `${jet.settings.success.class}`,
+                $error      = $(`${required}.${error}:visible:not(.${success})`),
+                $sucess     = $(`${required}.${success}:visible:not(.${error})`),
                 $incomplete = $(`${required}:visible:not(.${success}):not(.${error})`),
-                $notError = $(`${required}:not(.${error}):visible`),
-                $notSucess = $(`${required}:visible:not(.${success})`);
+                $notError   = $(`${required}:not(.${error}):visible`),
+                $notSucess  = $(`${required}:visible:not(.${success})`);
 
             return {
-                complete:(!!jet.isTheEnd && !$incomplete.length && !$notSucess.hasClass(error) && $notError.hasClass(success)),
+                complete: (!!jet.isTheEnd && !$incomplete.length && !$notSucess.hasClass(error) && $notError.hasClass(success)),
                 error: ($error.hasClass(error)),
-                success:($notError.hasClass(success) && !$incomplete.length && !$notSucess.hasClass(error)),
-                fields:{
-                    error:$error,
-                    success:$sucess,
-                    incomplete:$incomplete
+                success: ($notError.hasClass(success) && !$incomplete.length && !$notSucess.hasClass(error)),
+                fields: {
+                    error: $error,
+                    success: $sucess,
+                    incomplete: $incomplete
                 }
             };
 
         },
         endOfForm: function () {
-            let jet = this,
+            let jet    = this,
                 status = jet.formStatus();
             if (jet.executed) {
                 if (status.error) {
                     jet.settings.onUnFinishedForm(jet.element, status.fields);
                 }
-                if(status.success && status.complete) {
+                if (status.success && status.complete) {
                     jet.settings.onFinishedForm(jet.element, status.fields);
                 }
             }
