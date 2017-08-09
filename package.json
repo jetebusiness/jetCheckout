@@ -1,6 +1,6 @@
 {
   "name": "jetcheckout",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "jetCheckout - The simple checkout for you e-commerce",
   "keywords": [
     "jquery-plugin"
@@ -11,7 +11,7 @@
     "url": "https://github.com/bloo_df"
   },
   "repository": "https://github.com/bloodf/jetChekout",
-  "main": "src/jquery.jetcheckout.js",
+  "main": "dist/jquery.jetcheckout.js",
   "license": "Apache 2.0",
   "scripts": {
     "dev": "gulp dev",
