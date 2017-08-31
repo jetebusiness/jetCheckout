@@ -84,7 +84,7 @@
             name: {
                 type: "name",
                 pattern: /^[ ',-\.A-Za-z\xC0-\xCF\xD1-\xD6\xD8-\xDD\xDF-\xE5\xE7-\xF6\xF8-\xFD\xFF\u0104-\u0107\u010C\u010D\u0116-\u0119\u012E\u012F\u0141-\u0144\u0152\u0160\u0161\u016A\u016B\u0172\u0173\u0178-\u017E\u2202]+$/,
-                message: "Preencha com seu come completo. (Ex: João Silva ou Maria Silva)"
+                message: "Preencha com seu nome completo. (Ex: João Silva ou Maria Silva)"
             },
             number: {
                 type: "regex",

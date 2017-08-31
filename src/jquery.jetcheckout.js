@@ -79,7 +79,7 @@
                   name: {
                       type: "name",
                       pattern: /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u,
-                      message: "Preencha com seu come completo. (Ex: João Silva ou Maria Silva)"
+                      message: "Preencha com seu nome completo. (Ex: João Silva ou Maria Silva)"
                   },
                   number: {
                       type: "regex",
