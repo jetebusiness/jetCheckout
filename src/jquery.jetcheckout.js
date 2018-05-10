@@ -248,7 +248,7 @@
                             regex = validateOptions.toValidate();
                         }
                         else if (validateOptions.type === "name") {
-                            if (/[^-\s]\s/g.test(value)) {
+                           if (/^[A-ZÀ-Ÿ][A-zÀ-ÿ']+\s([A-zÀ-ÿ']\s?)*[A-ZÀ-Ÿ][A-zÀ-ÿ']+$/g.test(value)){
                                 regex = validateOptions.pattern.test(value);
                             }
                         }
