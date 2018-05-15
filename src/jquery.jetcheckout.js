@@ -60,7 +60,7 @@
                   },
                   creditcard: {
                       type: "regex",
-                      pattern: /\d{4}-?\d{4}-?\d{4}-?\d{4}/u,
+                      pattern: /\d{4}-?\d{4}-?\d{4}-?\d{4}-?\d{3}}/u,
                       message: "Cartão de crédito inválido."
                   },
                   cpfCnpj: {
